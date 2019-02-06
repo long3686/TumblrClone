@@ -7,15 +7,17 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class PhotosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-  
+    var image: UIImage
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return posts.count 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PhotoCellTableViewCell") as! PhotoCellTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PhotoCell") as! PhotoCell
         let post = posts[indexPath.row]
         
         if let photos = post["photos"] as? [[String: Any]]
@@ -29,6 +31,7 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
             // 4.
             let url = URL(string: urlString)
             
+            cell.ImageCell.af_setImage(withURL: url!)
         }
         return cell
     }
@@ -61,6 +64,7 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
                 // Store the returned array of dictionaries in our posts property
                 self.posts = responseDictionary["posts"] as! [[String: Any]]
                 // TODO: Reload the table view
+                self.TumblrTableView.reloadData()
             }
         }
         task.resume()
@@ -74,14 +78,19 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+       
         // Get the new view controller using segue.destinationViewController.
+        let vc = segue.destination as! PhotoDetailsViewController
+        let cell = sender as! UITableViewCell
+        let indexPath = TumblrTableView.indexPath(for: cell)!
+        
         // Pass the selected object to the new view controller.
     }
-    */
+    
 
 }
